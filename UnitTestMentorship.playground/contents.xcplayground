@@ -2,6 +2,6 @@
 <playground version='6.0' target-platform='ios' display-mode='rendered' buildActiveScheme='true' importAppTypes='true'>
     <pages>
         <page name='Day One - Butterfly'/>
-        <page name='Day Two - ?'/>
+        <page name='Day Two - Lollipop'/>
     </pages>
 </playground>
