@@ -116,7 +116,7 @@ final class DateValidationTests2: XCTestCase {
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValid_shouldReturnTrue() {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
-        let date = date(withHourComponent: 5)
+        let date = date(withHourComponent: 10)
         dateStub.nowToBeReturned = date ?? Date()
 
         XCTAssertEqual(sut.isWorkerWorkingValid(name: name, email: email), true)
@@ -126,7 +126,7 @@ final class DateValidationTests2: XCTestCase {
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValidXCTFail_shouldReturnTrue() throws {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
-        guard let date = date(withHourComponent: 5) else {
+        guard let date = date(withHourComponent: 10) else {
             return XCTFail("Unable to mock date")
         }
         dateStub.nowToBeReturned = date
@@ -138,7 +138,7 @@ final class DateValidationTests2: XCTestCase {
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValidUNWRAP_shouldReturnTrue() throws {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
-        let date = try XCTUnwrap(date(withHourComponent: 5))
+        let date = try XCTUnwrap(date(withHourComponent: 10))
         dateStub.nowToBeReturned = date
 
         XCTAssertEqual(sut.isWorkerWorkingValid(name: name, email: email), true)
