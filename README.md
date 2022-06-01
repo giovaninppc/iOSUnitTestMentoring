@@ -20,3 +20,13 @@ just run the Playground file and you'll find every topic we have discussed about
 - Protocols with static requirements
 - Making spies
 - Making spies for static protocols (😱)
+
+#### Day 3: Amoeba
+
+- XCTUnwrap
+- XCTFail
+- Test code legibility
+- Helper methods
+- Completion Spies
+- Custom Assertions
+- Test Flakyness
