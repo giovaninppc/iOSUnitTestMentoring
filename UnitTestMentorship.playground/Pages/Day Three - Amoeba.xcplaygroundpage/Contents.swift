@@ -30,7 +30,7 @@ import XCTest
 //: - We have a class that uses a current date in order to make some validations.
 final class DateValidation {
     private func isWorkingHous() -> Bool {
-        let currentDate = Date()
+        let currentDate = Date() // <--- Current Date
         let hourComponent = Calendar.current.component(.hour, from: currentDate)
         return hourComponent >= 8 && hourComponent <= 18
     }
@@ -48,6 +48,7 @@ final class DateValidationTests: XCTestCase {
 
     // Is this method correct?
     // What could go wrong?
+    // After 6PM
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValid_shouldReturnTrue() {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
@@ -81,6 +82,16 @@ extension Date: CurrentDateProvider {
 }
 //: This is a nice example of another `static provider protocol`, and actually onne we can use.
 //: We need to have the same handling and we discussed in Day 02 for static methods in order to test
+// Doubles (ptBR - Dublês)
+
+// Spy   - we want to look inside them
+//       - Mock return values
+//       - Parameters passed
+// Stub  - we want to change what they return to us
+//       - Mock return values
+// Mocks - data examples / objects
+// Dummy - not important to the test (doesnt do anything)
+
 final class CurrentDateProviderStub: CurrentDateProvider {
     static var nowToBeReturned: Date = .init()
     static func now() -> Date {
@@ -116,8 +127,8 @@ final class DateValidationTests2: XCTestCase {
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValid_shouldReturnTrue() {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
-        let date = date(withHourComponent: 10)
-        dateStub.nowToBeReturned = date ?? Date()
+        let date = date(withHourComponent: 10) // <-- Optional
+        dateStub.nowToBeReturned = date ?? Date() // ?? Date()
 
         XCTAssertEqual(sut.isWorkerWorkingValid(name: name, email: email), true)
     }
@@ -127,18 +138,23 @@ final class DateValidationTests2: XCTestCase {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
         guard let date = date(withHourComponent: 10) else {
-            return XCTFail("Unable to mock date")
+            return XCTFail("Unable to mock date") // <-- REALLY IMPORTANT
         }
         dateStub.nowToBeReturned = date
 
         XCTAssertEqual(sut.isWorkerWorkingValid(name: name, email: email), true)
     }
 
+// Every Assert method has a message field
+//
+// XCTAssertEqual(value1, value2, "Custom message")
+// XCTAssertTrue(value1, "Custom message")
+
     // Unwrap
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValidUNWRAP_shouldReturnTrue() throws {
         let name = "Dogritos Lindones"
         let email = "dogritos@email.com"
-        let date = try XCTUnwrap(date(withHourComponent: 10))
+        let date = try XCTUnwrap(date(withHourComponent: 10), "Unable to mock date") // XCTUnwrap(Value?) -> Value
         dateStub.nowToBeReturned = date
 
         XCTAssertEqual(sut.isWorkerWorkingValid(name: name, email: email), true)
@@ -157,8 +173,14 @@ final class DateValidationTests2: XCTestCase {
     func test_isWorkerWorkingValid_whenNameIsValidAndEmailIsValidAndHourIsValidCUSTOMASSERTION_shouldReturnTrue() throws {
         XCTAssertWorker(from: sut, withName: "Dogritos Lindoes", andEmail: "d@email.com", atHour: 13, is: true)
     }
+
+    // Event - all the tests you need to check every parameter
+    // Adding complexity to the Assert step
 }
+
 // MARK: - Helper Methods
+
+// Approaches to reduce repetition
 extension DateValidationTests2 {
     private func date(withHourComponent hour: Int) -> Date? {
         let format = "dd/MM/yyyy - HH:mm"
@@ -173,10 +195,16 @@ extension DateValidationTests2 {
         dateStub.nowToBeReturned = date
     }
 
+    // func XCTAssertEqual<T: Equatable>(_ left: T, right: T, message: String = "", file: StaticString = #file, line: UInt = #line)
+
     private func XCTAssertWorker(from sut: DateValidation2, withName name: String, andEmail: String, atHour hour: Int, is expectedResponse: Bool, file: StaticString = #file, line: UInt = #line) {
         injectDate(withHour: hour)
         let result = sut.isWorkerWorkingValid(name: "Dogritos Lindones", email: "dogritos@email.com")
         XCTAssertEqual(result, expectedResponse, file: file, line: line)
+        // XCTAssertEqual
+        // XCTAssertEqual
+        // XCTAssertEqual
+        // XCTAssertEqual
     }
 }
 
