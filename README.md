@@ -30,3 +30,10 @@ just run the Playground file and you'll find every topic we have discussed about
 - Completion Spies
 - Custom Assertions
 - Test Flakyness
+
+#### Day 4: Capybara
+
+- Mirror / Reflection
+- Testing references
+- Testing instances
+- @dynamicMemberLookup
