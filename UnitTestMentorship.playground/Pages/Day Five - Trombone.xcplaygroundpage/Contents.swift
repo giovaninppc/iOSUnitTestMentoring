@@ -113,12 +113,12 @@ final class TestingViewTests: XCTestCase {
         sut.delegate = delegateSpy
         return sut
     }()
-
 //: And now, to the test cases!
 //:
 //: And here's the issue... HOW THE HELL CAN WE SIMULATE A BUTTON TAP?
 //: It's easy if we can access the button reference
     func test_tappingTheInternalButton_whenHaveHostApp_shouldCallDelegate() {
+        // UIControl
         sut.internalButton.sendActions(for: .touchUpInside)
 
         // When you have the reference of the button, (or any UIControl actually),
@@ -138,7 +138,10 @@ final class TestingViewTests: XCTestCase {
 //: So, the `sendActions` method will not work.
 //: What we'll need to do is calling the Selector of the action directly.
     func test_tappingTheInternalButton_withoutHostApp_shouldCallDelegate() throws {
-        let action = try XCTUnwrap(sut.internalButton.actions(forTarget: sut, forControlEvent: .touchUpInside)?.first)
+        // Get the button referece
+        let button = sut.internalButton
+        // The Action - STRING
+        let action = try XCTUnwrap(button.actions(forTarget: sut, forControlEvent: .touchUpInside)?.first)
 
         // A selector's action is simply a `String` object
         // And, if you remember the Meta language properties of swift from our last day (Capybara)
@@ -147,6 +150,7 @@ final class TestingViewTests: XCTestCase {
         // OBS: need @objc tag to work!
 
         // Since the `sut` is what has the method we want to simulate, we call it to perform the selector
+        // NSObject - @objc
         sut.performSelector(onMainThread: .init(action), with: nil, waitUntilDone: true)
 
         // The `with` parameter is the parameter passed to the selector call
@@ -202,18 +206,18 @@ final class TestingViewTests: XCTestCase {
 //:
 //: Here, we'll make it a little more generic, performing gestures does not need to be only on the view, and any `UIControl` can have a gesture on it.
     private func performGestureRecognizer<T: UIGestureRecognizer>(type: T.Type, from interaction: AnyObject, on view: NSObject) {
-            let gesture = interaction.gestureRecognizers?.first { $0 is T }
+        let gesture = interaction.gestureRecognizers?.first { $0 is T }
 
-            let target = (gesture?.value(forKey: "_targets") as? [NSObject])?.first
-            let selectorString = String(describing: target)
-                .components(separatedBy: ", ")
-                .first?
-                .replacingOccurrences(of: "(action=", with: "")
-                .replacingOccurrences(of: "Optional(", with: "")
-                ?? ""
+        let target = (gesture?.value(forKey: "_targets") as? [NSObject])?.first
+        let selectorString = String(describing: target)
+            .components(separatedBy: ", ")
+            .first?
+            .replacingOccurrences(of: "(action=", with: "")
+            .replacingOccurrences(of: "Optional(", with: "")
+            ?? ""
 
-            view.perform(.init(stringLiteral: selectorString))
-        }
+        view.perform(.init(stringLiteral: selectorString))
+    }
 //: And make more tests!
     func test_slideBox_shouldCallDelegate() throws {
         let view: UIView? = reflect(from: sut, propertyName: "slidingBox")
@@ -224,4 +228,5 @@ final class TestingViewTests: XCTestCase {
         XCTAssertTrue(delegateSpy.didSlideViewCalled)
     }
 }
+//: > Reference: [Testing Gestures and Actions](https://medium.com/macoclock/testing-gestures-and-actions-8235188434f3)
 //: [Next](@next)
