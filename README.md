@@ -37,3 +37,8 @@ just run the Playground file and you'll find every topic we have discussed about
 - Testing references
 - Testing instances
 - @dynamicMemberLookup
+
+#### Day 5: Trombone
+
+- Testing button actions
+- Testing UIGestureRecognizers
